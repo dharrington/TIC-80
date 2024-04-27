@@ -26,11 +26,7 @@
 
 #include "core/core.h"
 
-#if defined (__TIC_WINDOWS__)
-#include <windows.h>
-#endif
-
-#include "build/c/janet.c"
+#include <janet.h>
 
 extern bool parse_note(const char* noteStr, s32* note, s32* octave);
 
