@@ -52,6 +52,7 @@ if(BUILD_WITH_JANET)
     target_include_directories(janet 
         PRIVATE 
             ${THIRDPARTY_DIR}/janet/src/include
+            ${THIRDPARTY_DIR}/janet
             ${CMAKE_SOURCE_DIR}/build/janet
             ${CMAKE_SOURCE_DIR}/include
             ${CMAKE_SOURCE_DIR}/src
