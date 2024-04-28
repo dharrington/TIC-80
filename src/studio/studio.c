@@ -2335,6 +2335,70 @@ void exitGame(Studio* studio)
     }
 }
 
+#if !defined(TIC_RUNTIME_STATIC)
+
+#if defined(__TIC_WINDOWS__)
+#define MODULE_EXT ".dll"
+#elif defined(__TIC_MACOSX__)
+#define MODULE_EXT ".dylib"
+#elif defined(__TIC_LINUX__) || defined(__TIC_ANDROID__)
+#define MODULE_EXT ".so"
+#endif
+
+#define CONFIG_SUFFUX "SyntaxConfig"
+
+static void* LoadedModules[MAX_SUPPORTED_LANGS + 1] = {};
+
+static void loadModule(const char *module_name, const char *config_name)
+{
+    void *module = dlopen(module_name, RTLD_NOW | RTLD_LOCAL);
+
+    if(module)
+    {
+        const tic_script_config *config = dlsym(module, config_name);
+
+        if(config)
+        {
+            printf("config is loaded: %s\n", config->name);
+
+            s32 count = 0;
+            FOREACH_LANG(_) count++;
+
+            if(count < MAX_SUPPORTED_LANGS)
+            {
+                Languages[count] = config;
+                LoadedModules[count] = module;
+            }
+        }
+    }
+}
+
+static void loadLangs()
+{
+    // !TODO: scan working directory for all dlls
+    static const struct Module {const char *config; const char* file;} Modules[] =
+    {
+        {"Lua" CONFIG_SUFFUX,         "lua" MODULE_EXT},
+        {"Moon" CONFIG_SUFFUX,        "lua" MODULE_EXT},
+        {"Fennel" CONFIG_SUFFUX,      "lua" MODULE_EXT},
+        {"Ruby" CONFIG_SUFFUX,        "ruby" MODULE_EXT},
+        {"Js" CONFIG_SUFFUX,          "js" MODULE_EXT},
+        {"Scheme" CONFIG_SUFFUX,      "scheme" MODULE_EXT},
+        {"Squirrel" CONFIG_SUFFUX,    "squirrel" MODULE_EXT},
+        {"Wren" CONFIG_SUFFUX,        "wren" MODULE_EXT},
+        {"Wasm" CONFIG_SUFFUX,        "wasm" MODULE_EXT},
+        {"Janet" CONFIG_SUFFUX,       "janet" MODULE_EXT},
+        {"Python" CONFIG_SUFFUX,      "python" MODULE_EXT},
+    };
+
+    FOR(const struct Module*, it, Modules)
+    {
+        loadModule(it->file, it->config);
+    }
+}
+
+#endif
+
 void studio_delete(Studio* studio)
 {
     {
@@ -2373,6 +2437,14 @@ void studio_delete(Studio* studio)
 #endif
 
     free(studio->fs);
+
+#if !defined(TIC_RUNTIME_STATIC)
+    for(void **it = LoadedModules, **end = it + COUNT_OF(LoadedModules); it != end; ++it)
+    {
+        dlclose(*it);
+    }
+#endif
+
     free(studio);
 }
 
@@ -2433,45 +2505,6 @@ bool studio_alive(Studio* studio)
     return studio->alive;
 }
 
-#if defined(__TIC_WINDOWS__)
-#define MODULE_EXT ".dll"
-#elif defined(__TIC_MACOSX__)
-#define MODULE_EXT ".dylib"
-#elif defined(__TIC_LINUX__) || defined(__TIC_ANDROID__)
-#define MODULE_EXT ".so"
-#endif
-
-static void loadLangs()
-{
-    const char *module_name = "js" MODULE_EXT;
-    void *module = dlopen(module_name, RTLD_NOW | RTLD_LOCAL);
-
-    if(module)
-    {
-        const tic_script_config *config = dlsym(module, "JsSyntaxConfig");
-
-        if(config)
-        {
-            printf("config is loaded: %s\n", config->name);
-
-            s32 count = 0;
-            FOREACH_LANG(_) count++;
-
-            if(count < MAX_SUPPORTED_LANGS)
-            {
-                Languages[count] = config;
-            }
-        }
-        else
-        {
-            printf("error: %s\n", "get_script_config not found");
-        }
-
-        // !TODO: clean all the modules!
-        // dlclose(module);
-    }
-}
-
 Studio* studio_create(s32 argc, char **argv, s32 samplerate, tic80_pixel_color_format format, const char* folder, s32 maxscale)
 {
     setbuf(stdout, NULL);
@@ -2484,7 +2517,9 @@ Studio* studio_create(s32 argc, char **argv, s32 samplerate, tic80_pixel_color_f
         exit(0);
     }
 
+#if !defined(TIC_RUNTIME_STATIC)
     loadLangs();
+#endif
 
     Studio* studio = NEW(Studio);
     *studio = (Studio)

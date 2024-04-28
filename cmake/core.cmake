@@ -40,41 +40,46 @@ macro(MACRO_CORE SCRIPT DEFINE BUILD_DEPRECATED)
 
     target_link_libraries(tic80core${SCRIPT} blipbuf zlib)
 
-    if(BUILD_WITH_LUA)
-        target_link_libraries(tic80core${SCRIPT} lua)
+
+    if(BUILD_STATIC)
+        if(BUILD_WITH_LUA)
+            target_link_libraries(tic80core${SCRIPT} lua)
+        endif()
+        
+        if(BUILD_WITH_JS)
+            target_link_libraries(tic80core${SCRIPT} js)
+        endif()
+
+        if(BUILD_WITH_SCHEME)
+            target_link_libraries(tic80core${SCRIPT} scheme)
+        endif()
+
+        if(BUILD_WITH_SQUIRREL)
+            target_link_libraries(tic80core${SCRIPT} squirrel)
+        endif()
+
+        if(BUILD_WITH_PYTHON)
+            target_link_libraries(tic80core${SCRIPT} python)
+        endif()
+
+        if(BUILD_WITH_WREN)
+            target_link_libraries(tic80core${SCRIPT} wren)
+        endif()
+
+        if(BUILD_WITH_MRUBY)
+            target_link_libraries(tic80core${SCRIPT} ruby)
+        endif()
+
+        if(BUILD_WITH_JANET)
+            target_link_libraries(tic80core${SCRIPT} janet)
+        endif()
+
+        if(BUILD_WITH_WASM)
+            target_link_libraries(tic80core${SCRIPT} wasm)
+        endif()
+
+        target_compile_definitions(tic80core${SCRIPT} PUBLIC TIC_RUNTIME_STATIC)
     endif()
-
-    # if(BUILD_WITH_JS)
-    #     target_link_libraries(tic80core${SCRIPT} js)
-    # endif()
-
-    # if(BUILD_WITH_SCHEME)
-    #     target_link_libraries(tic80core${SCRIPT} scheme)
-    # endif()
-
-    # if(BUILD_WITH_SQUIRREL)
-    #     target_link_libraries(tic80core${SCRIPT} squirrel)
-    # endif()
-
-    # if(BUILD_WITH_PYTHON)
-    #     target_link_libraries(tic80core${SCRIPT} python)
-    # endif()
-
-    # if(BUILD_WITH_WREN)
-    #     target_link_libraries(tic80core${SCRIPT} wren)
-    # endif()
-
-    # if(BUILD_WITH_MRUBY)
-    #     target_link_libraries(tic80core${SCRIPT} ruby)
-    # endif()
-
-    # if(BUILD_WITH_JANET)
-    #     target_link_libraries(tic80core${SCRIPT} janet)
-    # endif()
-
-    # if(BUILD_WITH_WASM)
-    #     target_link_libraries(tic80core${SCRIPT} wasm)
-    # endif()
 
     if(${BUILD_DEPRECATED})
         target_compile_definitions(tic80core${SCRIPT} PRIVATE BUILD_DEPRECATED)
@@ -91,7 +96,7 @@ endmacro()
 
 MACRO_CORE("" "" TRUE)
 
-if(BUILD_STUB)
+if(BUILD_STATIC AND BUILD_STUB)
 
     if(BUILD_WITH_LUA)
         MACRO_CORE(lua TIC_BUILD_WITH_LUA FALSE)

@@ -45,28 +45,28 @@ if(BUILD_WITH_WASM)
     # and the external WASM binary chunk since projects do not
     # include BINARY chunks
 
-    if(BUILD_DEMO_CARTS)
+    # if(BUILD_DEMO_CARTS)
 
-        file(GLOB WASM_DEMOS
-            ${DEMO_CARTS_IN}/wasm/*.wasmp
-            ${DEMO_CARTS_IN}/bunny/wasmmark/*.wasmp
-        )
+    #     file(GLOB WASM_DEMOS
+    #         ${DEMO_CARTS_IN}/wasm/*.wasmp
+    #         ${DEMO_CARTS_IN}/bunny/wasmmark/*.wasmp
+    #     )
 
-        foreach(CART_FILE ${WASM_DEMOS})
+    #     foreach(CART_FILE ${WASM_DEMOS})
 
-            get_filename_component(CART_NAME ${CART_FILE} NAME_WE)
-            get_filename_component(DIR ${CART_FILE} DIRECTORY)
+    #         get_filename_component(CART_NAME ${CART_FILE} NAME_WE)
+    #         get_filename_component(DIR ${CART_FILE} DIRECTORY)
 
-            set(OUTNAME ${CMAKE_SOURCE_DIR}/build/assets/${CART_NAME}.tic.dat)
-            set(WASM_BINARY ${DIR}/${CART_NAME}.wasm)
-            set(OUTPRJ ${CMAKE_SOURCE_DIR}/build/${CART_NAME}.tic)
-            list(APPEND DEMO_CARTS_OUT ${OUTNAME})
-            add_custom_command(OUTPUT ${OUTNAME}
-                COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/wasmp2cart ${CART_FILE} ${OUTPRJ} --binary ${WASM_BINARY} && ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/bin2txt ${OUTPRJ} ${OUTNAME} -z
-                DEPENDS bin2txt wasmp2cart ${CART_FILE} ${WASM_BINARY}
-            )
+    #         set(OUTNAME ${CMAKE_SOURCE_DIR}/build/assets/${CART_NAME}.tic.dat)
+    #         set(WASM_BINARY ${DIR}/${CART_NAME}.wasm)
+    #         set(OUTPRJ ${CMAKE_SOURCE_DIR}/build/${CART_NAME}.tic)
+    #         list(APPEND DEMO_CARTS_OUT ${OUTNAME})
+    #         add_custom_command(OUTPUT ${OUTNAME}
+    #             COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/wasmp2cart ${CART_FILE} ${OUTPRJ} --binary ${WASM_BINARY} && ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/bin2txt ${OUTPRJ} ${OUTNAME} -z
+    #             DEPENDS bin2txt wasmp2cart ${CART_FILE} ${WASM_BINARY}
+    #         )
 
-        endforeach(CART_FILE)
-    endif()
+    #     endforeach(CART_FILE)
+    # endif()
 
 endif()

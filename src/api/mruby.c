@@ -1216,7 +1216,7 @@ static const tic_outline_item* getMRubyOutline(const char* code, s32* size)
     return items;
 }
 
-const tic_script_config MRubySyntaxConfig =
+const tic_script_config RubySyntaxConfig =
 {
     .id                 = 11,
     .name               = "ruby",
