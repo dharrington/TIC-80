@@ -135,7 +135,7 @@ bool tic_project_ext(const char* name)
         if(tic_tool_has_ext(name, ln->fileExtension))
             return true;
     }
-    FOR_EACH_LANG_END
+
     return false;
 }
 

@@ -28,7 +28,6 @@
 #include "studio/config.h"
 #include "ext/png.h"
 #include "zip.h"
-#include "studio/demos.h"
 #include "retro_endianness.h"
 
 #if defined(TIC80_PRO)
@@ -269,6 +268,7 @@ static char* replaceHelpTokens(const char* text)
     char langnamespipe[10240] = {0};
 
     FOR_EACH_LANG(ln)
+    {
         bool isLast = *(conf+1) == NULL;
         bool isSecondToLast = *(conf+2) == NULL;
 
@@ -282,7 +282,7 @@ static char* replaceHelpTokens(const char* text)
         strcat(langnamespipe, ln->name);
         if (!isLast)
             strcat(langnamespipe, "|");
-    FOR_EACH_LANG_END
+    }
 
     char* replaced1 = str_replace(text, "$LANG_NAMES$", langnames);
     char* replaced2 = str_replace(replaced1, "$LANG_EXTENSIONS$", langextensions);
@@ -653,19 +653,19 @@ static char* getDemoCartPath(char* path, tic_script_config* script)
 
 static void* getDemoCart(Console* console, tic_script_config* script, s32* size)
 {
-    char path[1024];
-    getDemoCartPath(path, script);
+    // !TODO: temporary disabled custom demo
+    // char path[1024];
+    // getDemoCartPath(path, script);
 
-    {
-        void* data = tic_fs_loadroot(console->fs, path, size);
+    // {
+    //     void* data = tic_fs_loadroot(console->fs, path, size);
 
-        if(data && *size)
-            return data;
-    }
-    tic_script_config_extra* ex = getConfigExtra(script);
+    //     if(data && *size)
+    //         return data;
+    // }
 
-    const u8* demo = ex->demoRom;
-    s32 romSize = ex->demoRomSize;
+    const u8* demo = script->demoRom;
+    s32 romSize = script->demoRomSize;
 
     u8* data = calloc(1, sizeof(tic_cartridge));
 
@@ -673,8 +673,8 @@ static void* getDemoCart(Console* console, tic_script_config* script, s32* size)
     {
         *size = tic_tool_unzip(data, sizeof(tic_cartridge), demo, romSize);
 
-        if(*size)
-            tic_fs_saveroot(console->fs, path, data, *size, false);
+        // if(*size)
+            // tic_fs_saveroot(console->fs, path, data, *size, false);
     }
 
     return data;
@@ -1093,17 +1093,26 @@ static void onNewCommandConfirmed(Console* console)
 {
     bool done = false;
 
-    if(console->desc->count)
+    s32 count = 0;
+    FOR_EACH_LANG(_) count++;
+
+    if(count == 1)
+    {
+        loadDemo(console, *Languages);
+        done = true;
+    }
+    else if(console->desc->count)
     {
         const char* param = console->desc->params->key;
 
         FOR_EACH_LANG(ln)
+        {
             if(strcmp(param, ln->name) == 0)
             {
                 loadDemo(console, ln);
                 done = true;
-            }
-        FOR_EACH_LANG_END
+            }            
+        }
 
         if(!done)
         {
@@ -1258,8 +1267,10 @@ static void finishTabComplete(const TabCompleteData* data)
 static void tabCompleteLanguages(TabCompleteData* data)
 {
     FOR_EACH_LANG(ln)
+    {
         addTabCompleteOption(data, ln->name);
-    FOR_EACH_LANG_END
+    }
+
     finishTabComplete(data);
 }
 
@@ -1625,20 +1636,18 @@ static void onInstallDemosCommand(Console* console)
 
         FOR_EACH_LANG(ln)
         {
-            tic_script_config_extra* ex = getConfigExtra(ln);
-            if (ex->markRom != NULL) { // having a Mark is not mandatory
+            if (ln->markRom != NULL) { // having a Mark is not mandatory
                 char cartname[1024];
                 strcpy(cartname, ln->name);
                 strcat(cartname, "mark.tic");
 
-                tic_fs_save(fs, cartname, data, tic_tool_unzip(data, sizeof(tic_cartridge), ex->markRom, ex->markRomSize), true);
+                tic_fs_save(fs, cartname, data, tic_tool_unzip(data, sizeof(tic_cartridge), ln->markRom, ln->markRomSize), true);
                 printFront(console, Bunny);
                 printFront(console, "/");
                 printFront(console, cartname);
                 printLine(console);
             }
         }
-	FOR_EACH_LANG_END
 
         tic_fs_dirback(fs);
     }
@@ -1689,9 +1698,10 @@ static void onConfigCommand(Console* console)
             else
             {
                 FOR_EACH_LANG(script)
+                {
                     if (strcmp(console->desc->params[1].key, script->name) == 0)
                         onLoadDemoCommand(console, script);
-                FOR_EACH_LANG_END
+                }
             }
         }
         else

@@ -26,10 +26,10 @@
 #include "tic.h"
 #include "time.h"
 
-// convenience macros to loop languages
-#define FOR_EACH_LANG(ln) for (tic_script_config** conf = Languages ; *conf != NULL; conf++ ) { tic_script_config* ln = *conf;
-#define FOR_EACH_LANG_END }
+#define MAX_SUPPORTED_LANGS (16)
 
+// convenience macros to loop languages
+#define FOR_EACH_LANG(ln) for(tic_script_config **conf = Languages, *ln = *conf; *conf != NULL; ln = *++conf)
 
 typedef struct { u8 index; tic_flip flip; tic_rotate rotate; } RemapResult;
 typedef void(*RemapFunc)(void*, s32 x, s32 y, RemapResult* result);
@@ -112,10 +112,15 @@ typedef struct
 
     s32 api_keywordsCount;
     const char** api_keywords;
+
+    const void* demoRom;
+    const s32   demoRomSize;
+    const void* markRom;
+    const s32   markRomSize;
     
 } tic_script_config;
 
-extern tic_script_config* Languages[];
+extern tic_script_config** Languages;
 
 typedef enum
 {

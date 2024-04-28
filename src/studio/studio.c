@@ -58,6 +58,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include <dlfcn.h>
+
 #define MD5_HASHSIZE 16
 
 #if defined(TIC80_PRO)
@@ -2431,6 +2433,37 @@ bool studio_alive(Studio* studio)
     return studio->alive;
 }
 
+static void loadLangs()
+{
+    const char *module_name = "js.dll";
+    void *module = dlopen(module_name, RTLD_NOW | RTLD_LOCAL);
+
+    if(module)
+    {
+        const tic_script_config *config = dlsym(module, "JsSyntaxConfig");
+
+        if(config)
+        {
+            printf("config is loaded: %s\n", config->name);
+
+            s32 count = 0;
+            FOR_EACH_LANG(_) count++;
+
+            if(count < MAX_SUPPORTED_LANGS)
+            {
+                Languages[count] = config;
+            }
+        }
+        else
+        {
+            printf("error: %s\n", "get_script_config not found");
+        }
+
+        // !TODO: clean all the modules!
+        // dlclose(module);
+    }
+}
+
 Studio* studio_create(s32 argc, char **argv, s32 samplerate, tic80_pixel_color_format format, const char* folder, s32 maxscale)
 {
     setbuf(stdout, NULL);
@@ -2442,6 +2475,8 @@ Studio* studio_create(s32 argc, char **argv, s32 samplerate, tic80_pixel_color_f
         printf("%s\n", TIC_VERSION);
         exit(0);
     }
+
+    loadLangs();
 
     Studio* studio = NEW(Studio);
     *studio = (Studio)

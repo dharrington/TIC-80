@@ -123,7 +123,7 @@ static const char* projectComment(const char* name)
         if(tic_tool_has_ext(name, ln->fileExtension))
             return ln->projectComment;
     }
-    FOR_EACH_LANG_END
+
     return Languages[0]->projectComment;
 }
 

@@ -1254,6 +1254,16 @@ static void evalJs(tic_mem* tic, const char* code)
     core->data->error(core->data->data, "TODO: JS eval not yet implemented\n.");
 }
 
+static const u8 JsDemoRom[] =
+{
+    #include "../build/assets/jsdemo.tic.dat"
+};
+
+static const u8 jsmark[] =
+{
+    #include "../build/assets/jsmark.tic.dat"
+};
+
 const tic_script_config JsSyntaxConfig =
 {
     .id                 = 12,
@@ -1287,4 +1297,9 @@ const tic_script_config JsSyntaxConfig =
 
     .keywords           = JsKeywords,
     .keywordsCount      = COUNT_OF(JsKeywords),
+
+    .demoRom        = JsDemoRom,
+    .demoRomSize    = sizeof JsDemoRom,
+    .markRom        = jsmark,
+    .markRomSize    = sizeof jsmark,
 };

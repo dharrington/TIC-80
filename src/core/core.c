@@ -266,7 +266,6 @@ const tic_script_config* tic_core_script_config(tic_mem* memory)
         if(it->id == memory->cart.lang || compareMetatag(memory->cart.code.data, "script", it->name, it->singleComment))
             return it;
     }
-    FOR_EACH_LANG_END
 
     return Languages[0];
 }

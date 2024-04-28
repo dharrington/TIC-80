@@ -1830,6 +1830,16 @@ static void evalLua(tic_mem* tic, const char* code) {
     }
 }
 
+static const u8 LuaDemoRom[] =
+{
+    #include "../build/assets/luademo.tic.dat"
+};
+
+static const u8 LuaMarkRom[] =
+{
+    #include "../build/assets/luamark.tic.dat"
+};
+
 tic_script_config LuaSyntaxConfig = 
 {
     .id                 = 10,
@@ -1865,4 +1875,9 @@ tic_script_config LuaSyntaxConfig =
 
     .keywords           = LuaKeywords,
     .keywordsCount      = COUNT_OF(LuaKeywords),
+
+    .demoRom        = LuaDemoRom,
+    .demoRomSize    = sizeof LuaDemoRom,
+    .markRom        = LuaMarkRom,
+    .markRomSize    = sizeof LuaMarkRom,
 };
