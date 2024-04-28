@@ -29,7 +29,7 @@
 #define MAX_SUPPORTED_LANGS (16)
 
 // convenience macros to loop languages
-#define FOREACH_LANG(lang) for(const tic_script_config **conf = Languages, *lang = *conf; *conf != NULL; lang = *++conf)
+#define FOREACH_LANG(lang) for(const tic_script_config *lang = Languages, *end = lang + MAX_SUPPORTED_LANGS; lang != end && lang->id; lang++)
 
 typedef struct { u8 index; tic_flip flip; tic_rotate rotate; } RemapResult;
 typedef void(*RemapFunc)(void*, s32 x, s32 y, RemapResult* result);
@@ -122,7 +122,7 @@ typedef struct
 
 } tic_script_config;
 
-extern const tic_script_config* Languages[];
+extern tic_script_config Languages[];
 
 typedef enum
 {

@@ -124,7 +124,7 @@ static const char* projectComment(const char* name)
             return ln->projectComment;
     }
 
-    return Languages[0]->projectComment;
+    return Languages->id ? Languages->projectComment : NULL;
 }
 
 s32 tic_project_save(const char* name, void* data, const tic_cartridge* cart)

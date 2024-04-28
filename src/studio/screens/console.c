@@ -263,8 +263,8 @@ static char* replaceHelpTokens(const char* text)
 
     FOREACH_LANG(ln)
     {
-        bool isLast = *(conf+1) == NULL;
-        bool isSecondToLast = *(conf+2) == NULL;
+        bool isLast = false;//*(conf+1) == NULL;
+        bool isSecondToLast = false;//*(conf+2) == NULL;
 
         strcat(langnames, ln->name);
         if (!isLast)
@@ -1063,7 +1063,7 @@ static void onLoadCommand(Console* console)
 
 static void loadDemo(Console* console, const tic_script_config* script)
 {
-    if (script == NULL) script = Languages[0]; // can be called with null, meaning first language (Lua)
+    if (script == NULL) script = Languages; // can be called with null, meaning first language (Lua)
     s32 size = 0;
     u8* data = getDemoCart(console, script, &size);
 
@@ -1087,9 +1087,13 @@ static void onNewCommandConfirmed(Console* console)
     s32 count = 0;
     FOREACH_LANG(_) count++;
 
-    if(count == 1)
+    if(count == 0)
     {
-        loadDemo(console, *Languages);
+        printError(console, "\nerror: not found any language.");
+    }
+    else if(count == 1)
+    {
+        loadDemo(console, Languages);
         done = true;
     }
     else if(console->desc->count)
@@ -1605,7 +1609,7 @@ static void onConfigCommand(Console* console)
         {
             if (console->desc->count == 1)
             {
-                onLoadDemoCommand(console, Languages[0]);
+                onLoadDemoCommand(console, Languages);
             }
             else
             {

@@ -39,15 +39,7 @@ add_library(tic80studio STATIC
     ${CMAKE_SOURCE_DIR}/build/assets/cart.png.dat)
 
 if(WIN32)
-    add_library(dlfcn STATIC ${THIRDPARTY_DIR}/dlfcn/src/dlfcn.c)
-
-    target_link_libraries(tic80studio PRIVATE dlfcn)
-
-    target_include_directories(tic80studio 
-        PRIVATE 
-        ${THIRDPARTY_DIR}/dirent/include
-        ${THIRDPARTY_DIR}/dlfcn/src
-    )
+    target_include_directories(tic80studio PRIVATE ${THIRDPARTY_DIR}/dirent/include)
 endif()
 
 target_include_directories(tic80studio PUBLIC ${CMAKE_CURRENT_BINARY_DIR})

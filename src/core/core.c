@@ -32,6 +32,10 @@
 #include <stddef.h>
 #include <time.h>
 
+#if !defined(TIC_RUNTIME_STATIC)
+#include <dlfcn.h>
+#endif
+
 #include "tic_assert.h"
 
 #ifdef _3DS
@@ -42,11 +46,13 @@
 
 static_assert(TIC_BANK_BITS == 3,                   "tic_bank_bits");
 static_assert(sizeof(tic_map) < 1024 * 32,          "tic_map");
-static_assert(sizeof(tic_rgb) == 3,    "tic_rgb");
-static_assert(sizeof(tic_palette) == 48,    "tic_palette");
-static_assert(sizeof(((tic_vram *)0)->vars) == 4, "tic_vram vars");
+static_assert(sizeof(tic_rgb) == 3,                 "tic_rgb");
+static_assert(sizeof(tic_palette) == 48,            "tic_palette");
+static_assert(sizeof(((tic_vram *)0)->vars) == 4,   "tic_vram vars");
 static_assert(sizeof(tic_vram) == TIC_VRAM_SIZE,    "tic_vram");
 static_assert(sizeof(tic_ram) == TIC_RAM_SIZE,      "tic_ram");
+
+tic_script_config Languages[MAX_SUPPORTED_LANGS] = {};
 
 u8 tic_api_peek(tic_mem* memory, s32 address, s32 bits)
 {
@@ -267,7 +273,7 @@ const tic_script_config* tic_core_script_config(tic_mem* memory)
             return it;
     }
 
-    return Languages[0];
+    return Languages->id ? Languages : NULL;
 }
 
 static void updateSaveid(tic_mem* memory)
@@ -544,6 +550,10 @@ void tic_core_resume(tic_mem* memory)
     }
 }
 
+#if !defined(TIC_RUNTIME_STATIC)
+static void* LoadedModules[MAX_SUPPORTED_LANGS] = {};
+#endif
+
 void tic_core_close(tic_mem* memory)
 {
     tic_core* core = (tic_core*)memory;
@@ -561,6 +571,14 @@ void tic_core_close(tic_mem* memory)
     free(memory->product.screen);
 #endif
     free(memory->product.samples.buffer);
+
+#if !defined(TIC_RUNTIME_STATIC)
+    for(void **it = LoadedModules, **end = it + COUNT_OF(LoadedModules); it != end; ++it)
+    {
+        dlclose(*it);
+    }
+#endif
+
     free(core);
 }
 
@@ -733,6 +751,171 @@ void tic_core_blit(tic_mem* tic)
     tic_core_blit_ex(tic, (tic_blit_callback){scanline, border, NULL});
 }
 
+#if defined(TIC_RUNTIME_STATIC)
+
+#if defined (TIC_BUILD_WITH_LUA)
+extern tic_script_config LuaSyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_MRUBY)
+extern tic_script_config RubySyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_JS)
+extern tic_script_config JsSyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_MOON)
+extern tic_script_config MoonSyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_FENNEL)
+extern tic_script_config FennelSyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_SQUIRREL)
+extern tic_script_config SquirrelSyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_SCHEME)
+extern tic_script_config SchemeSyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_WREN)
+extern tic_script_config WrenSyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_WASM)
+extern tic_script_config WasmSyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_JANET)
+extern tic_script_config JanetSyntaxConfig;
+#endif
+
+#if defined(TIC_BUILD_WITH_PYTHON)
+extern tic_script_config PythonSyntaxConfig;
+#endif
+
+static void loadLangs()
+{
+    static const tic_script_config *LocalLanguages[] = 
+    {
+        #if defined (TIC_BUILD_WITH_LUA)
+        &LuaSyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_MRUBY)
+        &RubySyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_JS)
+        &JsSyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_MOON)
+        &MoonSyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_FENNEL)
+        &FennelSyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_SCHEME)
+        &SchemeSyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_SQUIRREL)
+        &SquirrelSyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_WREN)
+        &WrenSyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_WASM)
+        &WasmSyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_JANET)
+        &JanetSyntaxConfig,
+        #endif
+
+        #if defined(TIC_BUILD_WITH_PYTHON)
+        &PythonSyntaxConfig,
+        #endif
+
+    };
+
+    s32 i = 0;
+    for(const tic_script_config **it = LocalLanguages, **end = it + COUNT_OF(LocalLanguages); it != end; it++, i++)
+    {
+        Languages[i] = **it;
+    }
+}
+
+#else
+
+#if defined(__TIC_WINDOWS__)
+#define MODULE_EXT ".dll"
+#elif defined(__TIC_MACOSX__)
+#define MODULE_EXT ".dylib"
+#elif defined(__TIC_LINUX__) || defined(__TIC_ANDROID__)
+#define MODULE_EXT ".so"
+#endif
+
+#define CONFIG_SUFFUX "SyntaxConfig"
+
+static void loadModule(const char *module_name, const char *config_name)
+{
+    void *module = dlopen(module_name, RTLD_NOW | RTLD_LOCAL);
+
+    if(module)
+    {
+        const tic_script_config *config = dlsym(module, config_name);
+
+        if(config)
+        {
+            printf("config is loaded: %s\n", config->name);
+
+            s32 count = 0;
+            FOREACH_LANG(_) count++;
+
+            if(count < MAX_SUPPORTED_LANGS)
+            {
+                Languages[count] = *config;
+                LoadedModules[count] = module;
+            }
+        }
+    }
+}
+
+static void loadLangs()
+{
+    // !TODO: scan working directory for all dlls
+    static const struct Module {const char *config; const char* file;} Modules[] =
+    {
+        {"Lua" CONFIG_SUFFUX,         "lua" MODULE_EXT},
+        {"Moon" CONFIG_SUFFUX,        "lua" MODULE_EXT},
+        {"Fennel" CONFIG_SUFFUX,      "lua" MODULE_EXT},
+        {"Ruby" CONFIG_SUFFUX,        "ruby" MODULE_EXT},
+        {"Js" CONFIG_SUFFUX,          "js" MODULE_EXT},
+        {"Scheme" CONFIG_SUFFUX,      "scheme" MODULE_EXT},
+        {"Squirrel" CONFIG_SUFFUX,    "squirrel" MODULE_EXT},
+        {"Wren" CONFIG_SUFFUX,        "wren" MODULE_EXT},
+        {"Wasm" CONFIG_SUFFUX,        "wasm" MODULE_EXT},
+        {"Janet" CONFIG_SUFFUX,       "janet" MODULE_EXT},
+        {"Python" CONFIG_SUFFUX,      "python" MODULE_EXT},
+    };
+
+    FOR(const struct Module*, it, Modules)
+    {
+        loadModule(it->file, it->config);
+    }
+}
+
+#endif
+
 tic_mem* tic_core_create(s32 samplerate, tic80_pixel_color_format format)
 {
     tic_core* core = (tic_core*)malloc(sizeof(tic_core));
@@ -762,6 +945,8 @@ tic_mem* tic_core_create(s32 samplerate, tic80_pixel_color_format format)
 
     blip_set_rates(core->blip.left, CLOCKRATE, samplerate);
     blip_set_rates(core->blip.right, CLOCKRATE, samplerate);
+
+    loadLangs();
 
     {
 #define API_FUNC_DEF(name, ...) core->api.name = tic_api_ ## name;
