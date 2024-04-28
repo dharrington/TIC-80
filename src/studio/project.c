@@ -118,7 +118,7 @@ static char* saveBinarySection(char* ptr, const char* comment, const char* tag, 
 
 static const char* projectComment(const char* name)
 {
-    FOR_EACH_LANG(ln)
+    FOREACH_LANG(ln)
     {
         if(tic_tool_has_ext(name, ln->fileExtension))
             return ln->projectComment;

@@ -2164,7 +2164,7 @@ static void blitCursor(Studio* studio)
     tic_mem* tic = studio->tic;
     tic80_mouse* m = &tic->ram->input.mouse;
 
-    if(tic->input.mouse && !m->relative && m->x < TIC80_FULLWIDTH && m->y < TIC80_FULLHEIGHT)
+    if(tic->input.mouse && !m->relative && (s32)m->x < TIC80_FULLWIDTH && (s32)m->y < TIC80_FULLHEIGHT)
     {
         s32 sprite = CLAMP(tic->ram->vram.vars.cursor.sprite, 0, TIC_BANK_SPRITES - 1);
         const tic_bank* bank = &tic->cart.bank0;
@@ -2433,9 +2433,17 @@ bool studio_alive(Studio* studio)
     return studio->alive;
 }
 
+#if defined(__TIC_WINDOWS__)
+#define MODULE_EXT ".dll"
+#elif defined(__TIC_MACOSX__)
+#define MODULE_EXT ".dylib"
+#elif defined(__TIC_LINUX__) || defined(__TIC_ANDROID__)
+#define MODULE_EXT ".so"
+#endif
+
 static void loadLangs()
 {
-    const char *module_name = "js.dll";
+    const char *module_name = "js" MODULE_EXT;
     void *module = dlopen(module_name, RTLD_NOW | RTLD_LOCAL);
 
     if(module)
@@ -2447,7 +2455,7 @@ static void loadLangs()
             printf("config is loaded: %s\n", config->name);
 
             s32 count = 0;
-            FOR_EACH_LANG(_) count++;
+            FOREACH_LANG(_) count++;
 
             if(count < MAX_SUPPORTED_LANGS)
             {

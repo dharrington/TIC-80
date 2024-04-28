@@ -267,7 +267,7 @@ static char* replaceHelpTokens(const char* text)
     char langextensions[10240] = {0};
     char langnamespipe[10240] = {0};
 
-    FOR_EACH_LANG(ln)
+    FOREACH_LANG(ln)
     {
         bool isLast = *(conf+1) == NULL;
         bool isSecondToLast = *(conf+2) == NULL;
@@ -642,7 +642,7 @@ static void loadCartSection(Console* console, const tic_cartridge* cart, const c
         memcpy(&tic->cart, cart, sizeof(tic_cartridge));
 }
 
-static char* getDemoCartPath(char* path, tic_script_config* script)
+static char* getDemoCartPath(char* path, const tic_script_config* script)
 {
     strcpy(path, TIC_LOCAL_VERSION "default_");
     strcat(path, script->name);
@@ -651,7 +651,7 @@ static char* getDemoCartPath(char* path, tic_script_config* script)
     return path;
 }
 
-static void* getDemoCart(Console* console, tic_script_config* script, s32* size)
+static void* getDemoCart(Console* console, const tic_script_config* script, s32* size)
 {
     // !TODO: temporary disabled custom demo
     // char path[1024];
@@ -689,7 +689,7 @@ static void setCartName(Console* console, const char* name, const char* path)
         strcpy(console->rom.path, path);
 }
 
-static void onLoadDemoCommandConfirmed(Console* console, tic_script_config* script)
+static void onLoadDemoCommandConfirmed(Console* console, const tic_script_config* script)
 {
     void* data = NULL;
     s32 size = 0;
@@ -1016,13 +1016,13 @@ static void confirmCommand(Console* console, const char** text, s32 rows, Consol
     }
 }
 
-typedef void(*LoadDemoConfirmCallback)(Console* console, tic_script_config* script);
+typedef void(*LoadDemoConfirmCallback)(Console* console, const tic_script_config* script);
 
 typedef struct
 {
     Console* console;
     LoadDemoConfirmCallback callback;
-    tic_script_config* script;
+    const tic_script_config* script;
 } LoadDemoConfirmData;
 
 static void onLoadDemoConfirm(Studio* studio, bool yes, void* data)
@@ -1045,7 +1045,7 @@ static const char* LoadWarningRows[] =
     "Do you really want to load cart?",
 };
 
-static void onLoadDemoCommand(Console* console, tic_script_config* script)
+static void onLoadDemoCommand(Console* console, const tic_script_config* script)
 {
     if(studioCartChanged(console->studio))
     {
@@ -1070,7 +1070,7 @@ static void onLoadCommand(Console* console)
     }
 }
 
-static void loadDemo(Console* console, tic_script_config* script)
+static void loadDemo(Console* console, const tic_script_config* script)
 {
     if (script == NULL) script = Languages[0]; // can be called with null, meaning first language (Lua)
     s32 size = 0;
@@ -1094,7 +1094,7 @@ static void onNewCommandConfirmed(Console* console)
     bool done = false;
 
     s32 count = 0;
-    FOR_EACH_LANG(_) count++;
+    FOREACH_LANG(_) count++;
 
     if(count == 1)
     {
@@ -1105,7 +1105,7 @@ static void onNewCommandConfirmed(Console* console)
     {
         const char* param = console->desc->params->key;
 
-        FOR_EACH_LANG(ln)
+        FOREACH_LANG(ln)
         {
             if(strcmp(param, ln->name) == 0)
             {
@@ -1266,7 +1266,7 @@ static void finishTabComplete(const TabCompleteData* data)
 
 static void tabCompleteLanguages(TabCompleteData* data)
 {
-    FOR_EACH_LANG(ln)
+    FOREACH_LANG(ln)
     {
         addTabCompleteOption(data, ln->name);
     }
@@ -1634,7 +1634,7 @@ static void onInstallDemosCommand(Console* console)
         tic_fs_makedir(fs, Bunny);
         tic_fs_changedir(fs, Bunny);
 
-        FOR_EACH_LANG(ln)
+        FOREACH_LANG(ln)
         {
             if (ln->markRom != NULL) { // having a Mark is not mandatory
                 char cartname[1024];
@@ -1697,7 +1697,7 @@ static void onConfigCommand(Console* console)
             }
             else
             {
-                FOR_EACH_LANG(script)
+                FOREACH_LANG(script)
                 {
                     if (strcmp(console->desc->params[1].key, script->name) == 0)
                         onLoadDemoCommand(console, script);

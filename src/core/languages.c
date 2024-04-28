@@ -46,7 +46,7 @@ extern tic_script_config LuaSyntaxConfig;
 // extern tic_script_config PythonSyntaxConfig;
 // #endif
 
-static tic_script_config* DefaultLanguages[MAX_SUPPORTED_LANGS + 1] = 
+const tic_script_config* Languages[MAX_SUPPORTED_LANGS + 1] = 
 {
 
     #if defined (TIC_BUILD_WITH_LUA)
@@ -93,5 +93,3 @@ static tic_script_config* DefaultLanguages[MAX_SUPPORTED_LANGS + 1] =
     // &PythonSyntaxConfig,
     // #endif
 };
-
-tic_script_config **Languages = DefaultLanguages;

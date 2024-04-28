@@ -261,7 +261,7 @@ static bool compareMetatag(const char* code, const char* tag, const char* value,
 
 const tic_script_config* tic_core_script_config(tic_mem* memory)
 {
-    FOR_EACH_LANG(it)
+    FOREACH_LANG(it)
     {
         if(it->id == memory->cart.lang || compareMetatag(memory->cart.code.data, "script", it->name, it->singleComment))
             return it;

@@ -1041,7 +1041,7 @@ static void reportError(tic_core* core, Janet result)
 {
     janet_stacktrace(GameFiber, result);
     janet_buffer_push_u8(errBuffer, 0);
-    core->data->error(core->data->data, errBuffer->data);
+    core->data->error(core->data->data, (char*)errBuffer->data);
 }
 
 

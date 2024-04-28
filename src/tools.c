@@ -130,7 +130,7 @@ tic_blitpal tic_tool_palette_blit(const tic_palette* srcpal, tic80_pixel_color_f
 
 bool tic_project_ext(const char* name)
 {
-    FOR_EACH_LANG(ln)
+    FOREACH_LANG(ln)
     {
         if(tic_tool_has_ext(name, ln->fileExtension))
             return true;
