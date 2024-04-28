@@ -58,7 +58,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#if !defined(TIC_RUNTIME_STATIC)
 #include <dlfcn.h>
+#endif
 
 #define MD5_HASHSIZE 16
 
