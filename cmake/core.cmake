@@ -42,7 +42,7 @@ macro(MACRO_CORE SCRIPT DEFINE BUILD_DEPRECATED)
 
     if(BUILD_STATIC)
         if(BUILD_WITH_LUA)
-            target_link_libraries(tic80core${SCRIPT} PRIVATE lua)
+            target_link_libraries(tic80core${SCRIPT} PUBLIC lua)
         endif()
         
         if(BUILD_WITH_JS)

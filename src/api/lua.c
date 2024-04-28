@@ -1947,6 +1947,6 @@ const tic_script_config LuaSyntaxConfig =
         {DemoBenchmark, sizeof DemoBenchmark,   "benchmark.tic"},
         {DemoBpp,       sizeof DemoBpp,         "bpp.tic"},
         {DemoCar,       sizeof DemoCar,         "car.tic"},
-        {},
+        {0},
     },
 };
