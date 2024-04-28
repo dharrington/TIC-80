@@ -1216,6 +1216,16 @@ static const tic_outline_item* getMRubyOutline(const char* code, s32* size)
     return items;
 }
 
+static const u8 DemoRom[] =
+{
+    #include "../build/assets/rubydemo.tic.dat"
+};
+
+static const u8 MarkRom[] =
+{
+    #include "../build/assets/rubymark.tic.dat"
+};
+
 const tic_script_config RubySyntaxConfig =
 {
     .id                 = 11,
@@ -1248,4 +1258,7 @@ const tic_script_config RubySyntaxConfig =
 
     .keywords           = MRubyKeywords,
     .keywordsCount      = COUNT_OF(MRubyKeywords),
+
+    .demo = {DemoRom, sizeof DemoRom},
+    .mark = {MarkRom, sizeof MarkRom, "rubymark.tic"},
 };

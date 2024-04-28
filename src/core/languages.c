@@ -4,47 +4,47 @@
 #if defined(TIC_RUNTIME_STATIC)
 
     #if defined (TIC_BUILD_WITH_LUA)
-    extern tic_script_config LuaSyntaxConfig;
+    extern const tic_script_config LuaSyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_MRUBY)
-    extern tic_script_config RubySyntaxConfig;
+    extern const tic_script_config RubySyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_JS)
-    extern tic_script_config JsSyntaxConfig;
+    extern const tic_script_config JsSyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_MOON)
-    extern tic_script_config MoonSyntaxConfig;
+    extern const tic_script_config MoonSyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_FENNEL)
-    extern tic_script_config FennelSyntaxConfig;
+    extern const tic_script_config FennelSyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_SQUIRREL)
-    extern tic_script_config SquirrelSyntaxConfig;
+    extern const tic_script_config SquirrelSyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_SCHEME)
-    extern tic_script_config SchemeSyntaxConfig;
+    extern const tic_script_config SchemeSyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_WREN)
-    extern tic_script_config WrenSyntaxConfig;
+    extern const tic_script_config WrenSyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_WASM)
-    extern tic_script_config WasmSyntaxConfig;
+    extern const tic_script_config WasmSyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_JANET)
-    extern tic_script_config JanetSyntaxConfig;
+    extern const tic_script_config JanetSyntaxConfig;
     #endif
 
     #if defined(TIC_BUILD_WITH_PYTHON)
-    extern tic_script_config PythonSyntaxConfig;
+    extern const tic_script_config PythonSyntaxConfig;
     #endif
 #endif
 

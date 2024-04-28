@@ -1830,17 +1830,72 @@ static void evalLua(tic_mem* tic, const char* code) {
     }
 }
 
-static const u8 LuaDemoRom[] =
+static const u8 DemoRom[] =
 {
     #include "../build/assets/luademo.tic.dat"
 };
 
-static const u8 LuaMarkRom[] =
+static const u8 MarkRom[] =
 {
     #include "../build/assets/luamark.tic.dat"
 };
 
-tic_script_config LuaSyntaxConfig = 
+static const u8 DemoFire[] =
+{
+    #include "../build/assets/fire.tic.dat"
+};
+
+static const u8 DemoP3d[] =
+{
+    #include "../build/assets/p3d.tic.dat"
+};
+
+static const u8 DemoSfx[] =
+{
+    #include "../build/assets/sfx.tic.dat"
+};
+
+static const u8 DemoPalette[] =
+{
+    #include "../build/assets/palette.tic.dat"
+};
+
+static const u8 DemoFont[] =
+{
+    #include "../build/assets/font.tic.dat"
+};
+
+static const u8 DemoMusic[] =
+{
+    #include "../build/assets/music.tic.dat"
+};
+
+static const u8 DemoQuest[] =
+{
+    #include "../build/assets/quest.tic.dat"
+};
+
+static const u8 DemoTetris[] =
+{
+    #include "../build/assets/tetris.tic.dat"
+};
+
+static const u8 DemoBenchmark[] =
+{
+    #include "../build/assets/benchmark.tic.dat"
+};
+
+static const u8 DemoBpp[] =
+{
+    #include "../build/assets/bpp.tic.dat"
+};
+
+static const u8 DemoCar[] =
+{
+    #include "../build/assets/car.tic.dat"
+};
+
+const tic_script_config LuaSyntaxConfig = 
 {
     .id                 = 10,
     .name               = "lua",
@@ -1876,8 +1931,22 @@ tic_script_config LuaSyntaxConfig =
     .keywords           = LuaKeywords,
     .keywordsCount      = COUNT_OF(LuaKeywords),
 
-    .demoRom        = LuaDemoRom,
-    .demoRomSize    = sizeof LuaDemoRom,
-    .markRom        = LuaMarkRom,
-    .markRomSize    = sizeof LuaMarkRom,
+    .demo = {DemoRom, sizeof DemoRom},
+    .mark = {MarkRom, sizeof MarkRom, "luamark.tic"},
+
+    .demos = (struct tic_demo[])
+    {
+        {DemoFire,      sizeof DemoFire,        "fire.tic"},
+        {DemoP3d,       sizeof DemoP3d,         "p3d.tic"},
+        {DemoSfx,       sizeof DemoSfx,         "sfx.tic"},
+        {DemoPalette,   sizeof DemoPalette,     "palette.tic"},
+        {DemoFont,      sizeof DemoFont,        "font.tic"},
+        {DemoMusic,     sizeof DemoMusic,       "music.tic"},
+        {DemoQuest,     sizeof DemoQuest,       "quest.tic"},
+        {DemoTetris,    sizeof DemoTetris,      "tetris.tic"},
+        {DemoBenchmark, sizeof DemoBenchmark,   "benchmark.tic"},
+        {DemoBpp,       sizeof DemoBpp,         "bpp.tic"},
+        {DemoCar,       sizeof DemoCar,         "car.tic"},
+        {},
+    },
 };

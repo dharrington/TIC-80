@@ -434,6 +434,7 @@ void tic_fs_enum(tic_fs* fs, fs_list_callback onItem, fs_done_callback onDone, v
         char request[TICNAME_MAX];
         snprintf(request, sizeof request, "/api?fn=dir&path=%s", fs->work + sizeof(TIC_HOST));
 
+        // !TODO: get JSON data instead Lua from the server
         NetDirData netDirData = { onItem, onDone, data };
         tic_net_get(fs->net, request, onDirResponse, MOVE(netDirData));
 

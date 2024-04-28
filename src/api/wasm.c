@@ -1312,6 +1312,16 @@ void evalWasm(tic_mem* tic, const char* code) {
     printf("TODO: Wasm eval not yet implemented\n.");
 }
 
+static const u8 DemoRom[] =
+{
+    #include "../build/assets/wasmdemo.tic.dat"
+};
+
+static const u8 MarkRom[] =
+{
+    #include "../build/assets/wasmmark.tic.dat"
+};
+
 const tic_script_config WasmSyntaxConfig =
 {
     .id                 = 17,
@@ -1345,9 +1355,7 @@ const tic_script_config WasmSyntaxConfig =
 
     .keywords           = NULL,
     .keywordsCount      = 0,
-};
 
-const tic_script_config* get_wasm_script_config()
-{
-    return &WasmSyntaxConfig;
-}
+    .demo = {DemoRom, sizeof DemoRom},
+    .mark = {MarkRom, sizeof MarkRom, "wasmmark.tic"},
+};

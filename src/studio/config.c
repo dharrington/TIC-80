@@ -150,6 +150,7 @@ static void readConfig(Config* config)
 
     if(lua)
     {
+        // !TODO: use JSON pareser here, or simply KEY=VALUE
         if(luaL_loadstring(lua, config->cart->code.data) == LUA_OK && lua_pcall(lua, 0, LUA_MULTRET, 0) == LUA_OK)
         {
             readGlobalBool(lua,     "CHECK_NEW_VERSION",    &config->data.checkNewVersion);

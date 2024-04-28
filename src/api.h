@@ -113,11 +113,13 @@ typedef struct
     s32 api_keywordsCount;
     const char** api_keywords;
 
-    const void* demoRom;
-    const s32   demoRomSize;
-    const void* markRom;
-    const s32   markRomSize;
-    
+    struct tic_demo
+    {
+        const u8* data;
+        s32 size;
+        const char* name;
+    } demo, mark, *demos;
+
 } tic_script_config;
 
 extern const tic_script_config* Languages[];

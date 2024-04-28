@@ -1266,6 +1266,16 @@ static const tic_outline_item* getJanetOutline(const char* code, s32* size)
     return items;
 }
 
+static const u8 DemoRom[] =
+{
+    #include "../build/assets/janetdemo.tic.dat"
+};
+
+static const u8 MarkRom[] =
+{
+    #include "../build/assets/janetmark.tic.dat"
+};
+
 JANET_API const tic_script_config JanetSyntaxConfig =
 {
     .id                 = 18,
@@ -1298,4 +1308,7 @@ JANET_API const tic_script_config JanetSyntaxConfig =
 
     .keywords           = JanetKeywords,
     .keywordsCount      = COUNT_OF(JanetKeywords),
+
+    .demo = {DemoRom, sizeof DemoRom},
+    .mark = {MarkRom, sizeof MarkRom, "janetmark.tic"},
 };
