@@ -52,7 +52,7 @@ static_assert(sizeof(((tic_vram *)0)->vars) == 4,   "tic_vram vars");
 static_assert(sizeof(tic_vram) == TIC_VRAM_SIZE,    "tic_vram");
 static_assert(sizeof(tic_ram) == TIC_RAM_SIZE,      "tic_ram");
 
-tic_script_config Languages[MAX_SUPPORTED_LANGS] = {};
+tic_script_config Languages[MAX_SUPPORTED_LANGS] = {0};
 
 u8 tic_api_peek(tic_mem* memory, s32 address, s32 bits)
 {
