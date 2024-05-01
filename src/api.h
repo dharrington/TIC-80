@@ -888,3 +888,11 @@ const tic_script_config* tic_core_script_config(tic_mem* memory);
 #define VBANK(tic, bank)                                \
     bool MACROVAR(_bank_) = tic_api_vbank(tic, bank);   \
     SCOPE(tic_api_vbank(tic, MACROVAR(_bank_)))
+
+#define SYNTAX_CONFIG SyntaxConfig
+
+#if defined(TIC_RUNTIME_STATIC)
+#define EXPORT_CONFIG(X) CONCAT(X, SYNTAX_CONFIG)
+#else
+#define EXPORT_CONFIG(X) SYNTAX_CONFIG
+#endif

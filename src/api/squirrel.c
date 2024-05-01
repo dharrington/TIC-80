@@ -1858,7 +1858,7 @@ static const u8 MarkRom[] =
     #include "../build/assets/squirrelmark.tic.dat"
 };
 
-const tic_script_config SquirrelSyntaxConfig = 
+const tic_script_config EXPORT_CONFIG(Squirrel) = 
 {
     .id                 = 15,
     .name               = "squirrel",

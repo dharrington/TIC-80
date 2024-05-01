@@ -30,7 +30,9 @@ if(BUILD_WITH_WREN)
     if(NOT BUILD_STATIC)
         set_target_properties(wren PROPERTIES PREFIX "")
     endif()
-    
+
+    target_link_libraries(wren PRIVATE runtime)
+
     target_include_directories(wren 
         PRIVATE 
             ${CMAKE_SOURCE_DIR}/include

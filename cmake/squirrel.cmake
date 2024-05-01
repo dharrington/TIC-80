@@ -43,6 +43,8 @@ if(BUILD_WITH_SQUIRREL)
         set_target_properties(squirrel PROPERTIES PREFIX "")
     endif()
 
+    target_link_libraries(squirrel PRIVATE runtime)
+
     set_target_properties(squirrel PROPERTIES LINKER_LANGUAGE CXX)
 
     target_include_directories(squirrel 

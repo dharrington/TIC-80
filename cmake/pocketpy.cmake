@@ -26,6 +26,8 @@ if(BUILD_WITH_PYTHON)
         set_target_properties(python PROPERTIES PREFIX "")
     endif()
 
+    target_link_libraries(python PRIVATE runtime)
+
     target_include_directories(python 
         PRIVATE 
             ${THIRDPARTY_DIR}/pocketpy/include

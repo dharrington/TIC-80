@@ -187,7 +187,7 @@ static const u8 DemoRom[] =
     #include "../build/assets/fenneldemo.tic.dat"
 };
 
-const tic_script_config FennelSyntaxConfig =
+const tic_script_config EXPORT_CONFIG(Fennel) =
 {
     .id                 = 14,
     .name               = "fennel",

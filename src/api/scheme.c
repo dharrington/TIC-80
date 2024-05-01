@@ -1028,7 +1028,7 @@ static const u8 MarkRom[] =
     #include "../build/assets/schememark.tic.dat"
 };
 
-const tic_script_config SchemeSyntaxConfig =
+const tic_script_config EXPORT_CONFIG(Scheme) =
 {
     .id                     = 19,
     .name                   = "scheme",

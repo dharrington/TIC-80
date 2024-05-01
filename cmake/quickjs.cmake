@@ -47,6 +47,8 @@ if(BUILD_WITH_JS)
         set_target_properties(js PROPERTIES PREFIX "")
     endif()
 
+    target_link_libraries(js PRIVATE runtime)
+
     target_link_libraries(js PRIVATE quickjs)
     target_include_directories(js 
         PRIVATE 

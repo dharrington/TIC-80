@@ -1322,7 +1322,7 @@ static const u8 MarkRom[] =
     #include "../build/assets/wasmmark.tic.dat"
 };
 
-const tic_script_config WasmSyntaxConfig =
+const tic_script_config EXPORT_CONFIG(Wasm) =
 {
     .id                 = 17,
     .name               = "wasm",

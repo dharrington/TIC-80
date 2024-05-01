@@ -1895,7 +1895,7 @@ static const u8 DemoCar[] =
     #include "../build/assets/car.tic.dat"
 };
 
-const tic_script_config LuaSyntaxConfig = 
+const tic_script_config EXPORT_CONFIG(Lua) = 
 {
     .id                 = 10,
     .name               = "lua",

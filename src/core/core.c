@@ -864,15 +864,13 @@ static void loadLangs()
 #define MODULE_EXT ".so"
 #endif
 
-#define CONFIG_SUFFUX "SyntaxConfig"
-
-static void loadModule(const char *module_name, const char *config_name)
+static void loadModule(const char *module_name)
 {
     void *module = dlopen(module_name, RTLD_NOW | RTLD_LOCAL);
 
     if(module)
     {
-        const tic_script_config *config = dlsym(module, config_name);
+        const tic_script_config *config = dlsym(module, DEF2STR(SYNTAX_CONFIG));
 
         if(config)
         {
@@ -887,30 +885,34 @@ static void loadModule(const char *module_name, const char *config_name)
                 LoadedModules[count] = module;
             }
         }
+        else
+        {
+            dlclose(module);
+        }
     }
 }
 
 static void loadLangs()
 {
     // !TODO: scan working directory for all dlls
-    static const struct Module {const char *config; const char* file;} Modules[] =
+    static const struct Module {const char* file;} Modules[] =
     {
-        {"Lua" CONFIG_SUFFUX,         "lua" MODULE_EXT},
-        {"Moon" CONFIG_SUFFUX,        "lua" MODULE_EXT},
-        {"Fennel" CONFIG_SUFFUX,      "lua" MODULE_EXT},
-        {"Ruby" CONFIG_SUFFUX,        "ruby" MODULE_EXT},
-        {"Js" CONFIG_SUFFUX,          "js" MODULE_EXT},
-        {"Scheme" CONFIG_SUFFUX,      "scheme" MODULE_EXT},
-        {"Squirrel" CONFIG_SUFFUX,    "squirrel" MODULE_EXT},
-        {"Wren" CONFIG_SUFFUX,        "wren" MODULE_EXT},
-        {"Wasm" CONFIG_SUFFUX,        "wasm" MODULE_EXT},
-        {"Janet" CONFIG_SUFFUX,       "janet" MODULE_EXT},
-        {"Python" CONFIG_SUFFUX,      "python" MODULE_EXT},
+        {"lua" MODULE_EXT},
+        {"moon" MODULE_EXT},
+        {"fennel" MODULE_EXT},
+        {"ruby" MODULE_EXT},
+        {"js" MODULE_EXT},
+        {"scheme" MODULE_EXT},
+        {"squirrel" MODULE_EXT},
+        {"wren" MODULE_EXT},
+        {"wasm" MODULE_EXT},
+        {"janet" MODULE_EXT},
+        {"python" MODULE_EXT},
     };
 
     FOR(const struct Module*, it, Modules)
     {
-        loadModule(it->file, it->config);
+        loadModule(it->file);
     }
 }
 

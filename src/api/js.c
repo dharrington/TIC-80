@@ -1264,7 +1264,7 @@ static const u8 MarkRom[] =
     #include "../build/assets/jsmark.tic.dat"
 };
 
-const tic_script_config JsSyntaxConfig =
+const tic_script_config EXPORT_CONFIG(Js) =
 {
     .id                 = 12,
     .name               = "js",

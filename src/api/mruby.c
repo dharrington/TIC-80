@@ -1226,7 +1226,7 @@ static const u8 MarkRom[] =
     #include "../build/assets/rubymark.tic.dat"
 };
 
-const tic_script_config RubySyntaxConfig =
+const tic_script_config EXPORT_CONFIG(Ruby) =
 {
     .id                 = 11,
     .name               = "ruby",

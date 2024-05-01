@@ -14,13 +14,13 @@ message("VERSION_HASH: ${VERSION_HASH}")
 
 configure_file("${PROJECT_SOURCE_DIR}/version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/version.h")
 
+set(BUILD_DEMO_CARTS_DEFAULT OFF)
+
 if(ANDROID OR EMSCRIPTEN OR N3DS OR RPI)
     set(BUILD_LIBRETRO_DEFAULT OFF)
-    set(BUILD_DEMO_CARTS_DEFAULT OFF)
     set(BUILD_PLAYER_DEFAULT OFF)
 else()
     set(BUILD_LIBRETRO_DEFAULT ON)
-    set(BUILD_DEMO_CARTS_DEFAULT ON)
     set(BUILD_PLAYER_DEFAULT ON)
 endif()
 
@@ -53,8 +53,11 @@ if(NOT BUILD_SDL)
     set(BUILD_SDLGPU OFF)
 endif()
 
+add_library(runtime INTERFACE)
+
 if(BUILD_STATIC)
     set(TIC_RUNTIME STATIC)
+    target_compile_definitions(runtime INTERFACE TIC_RUNTIME_STATIC)
 else()
     set(TIC_RUNTIME SHARED)
 endif()
@@ -70,7 +73,6 @@ endif()
 
 if (BAREMETALPI)
     set(BUILD_SDL OFF)
-    set(BUILD_DEMO_CARTS OFF)
 endif()
 
 if(UNIX AND NOT APPLE AND NOT EMSCRIPTEN AND NOT ANDROID AND NOT N3DS)
@@ -129,6 +131,8 @@ include(cmake/zip.cmake)
 include(cmake/tools.cmake)
 
 include(cmake/lua.cmake)
+include(cmake/moon.cmake)
+include(cmake/fennel.cmake)
 include(cmake/wren.cmake)
 include(cmake/mruby.cmake)
 include(cmake/wasm.cmake)

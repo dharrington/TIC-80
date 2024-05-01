@@ -20,6 +20,8 @@ if(BUILD_WITH_SCHEME)
         set_target_properties(scheme PROPERTIES PREFIX "")
     endif()
 
+    target_link_libraries(scheme PRIVATE runtime)
+
     set_target_properties(scheme PROPERTIES LINKER_LANGUAGE CXX)
     target_include_directories(scheme 
         PUBLIC ${SCHEME_DIR}

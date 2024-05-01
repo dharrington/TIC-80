@@ -23,6 +23,8 @@ if(BUILD_WITH_MRUBY)
         set_target_properties(ruby PROPERTIES PREFIX "")
     endif()
 
+    target_link_libraries(ruby PRIVATE runtime)
+
     if(CMAKE_BUILD_TYPE)
         string(TOUPPER ${CMAKE_BUILD_TYPE} BUILD_TYPE_UC)
     endif()

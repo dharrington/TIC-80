@@ -1829,7 +1829,7 @@ static const u8 MarkRom[] =
     #include "../build/assets/wrenmark.tic.dat"
 };
 
-const tic_script_config WrenSyntaxConfig =
+const tic_script_config EXPORT_CONFIG(Wren) =
 {
     .id                 = 16,
     .name               = "wren",

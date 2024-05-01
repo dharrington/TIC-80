@@ -49,6 +49,8 @@ if(BUILD_WITH_JANET)
         set_target_properties(janet PROPERTIES PREFIX "")
     endif()
 
+    target_link_libraries(janet PRIVATE runtime)
+
     target_include_directories(janet 
         PRIVATE 
             ${THIRDPARTY_DIR}/janet/src/include

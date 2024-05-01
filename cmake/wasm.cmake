@@ -32,6 +32,8 @@ if(BUILD_WITH_WASM)
         set_target_properties(wasm PROPERTIES PREFIX "")
     endif()
 
+    target_link_libraries(wasm PRIVATE runtime)
+
     target_include_directories(wasm 
         PUBLIC ${WASM_DIR}
         PRIVATE 
